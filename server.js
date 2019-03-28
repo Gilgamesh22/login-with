@@ -1,6 +1,9 @@
-const express = require('express')
-const LoginApp = require('./index')
-const opts = require('./src/opts')(process.argv, process.env)
+const express = require('express');
+const LoginApp = require('./index');
+var https = require('https');
+const path = require("path");
+var fs = require('fs');
+const opts = require('./src/opts')(process.argv, process.env);
 
 let app = express()
 
@@ -8,4 +11,7 @@ let app = express()
 app.use('/', LoginApp)
 
 // start the server
-app.listen(opts.port)
+https.createServer({
+  key: fs.readFileSync(path.join(__dirname, 'private.key')),
+  cert: fs.readFileSync(path.join(__dirname, 'certificate.crt'))
+}, app).listen(opts.port)
